@@ -1,19 +1,29 @@
 /*
-Link:https://www.codingninjas.com/codestudio/problems/count-inversions_8230680?challengeSlug=striver-sde-challenge
+Link: https://www.codingninjas.com/codestudio/problems/reverse-pairs_8230825?challengeSlug=striver-sde-challenge
 */
+
 #include <bits/stdc++.h>
 using namespace std;
 class Solution
 {
-    long long merge(long long *arr, int start, int end)
+    int merge(vector<int> &arr, int start, int end)
     {
         int mid = start + (end - start) / 2;
-        long long inv = 0;
+        int inv = 0;
         int len1 = mid - start + 1;
         int len2 = end - mid;
 
         int *first = new int[len1];
         int *second = new int[len2];
+
+        int j = mid + 1;
+        for (int i = start; i <= mid; i++)
+        {
+            while (j <= end and arr[i] > 2ll * arr[j])
+                j++;
+
+            inv += j - (mid + 1);
+        }
 
         int mainArrayIndex = start;
         for (int i = 0; i < len1; i++)
@@ -28,13 +38,10 @@ class Solution
         mainArrayIndex = start;
         while (index1 < len1 && index2 < len2)
         {
-            if (first[index1] < second[index2])
+            if (first[index1] <= second[index2])
                 arr[mainArrayIndex++] = first[index1++];
             else
-            {
                 arr[mainArrayIndex++] = second[index2++];
-                inv += len1 - index1;
-            }
         }
 
         while (index1 < len1)
@@ -45,9 +52,9 @@ class Solution
         return inv;
     }
 
-    long long mergeSort(long long *arr, int start, int end)
+    int mergeSort(vector<int> &arr, int start, int end)
     {
-        long long inv = 0;
+        int inv = 0;
         if (start >= end)
             return inv;
 
@@ -60,8 +67,8 @@ class Solution
         return inv;
     }
 
-    long long getInversions(long long *arr, int n)
+    int reversePairs(vector<int> &arr, int n)
     {
-        return mergeSort(arr, 0, n - 1);
+        mergeSort(arr, 0, n - 1);
     }
 };
