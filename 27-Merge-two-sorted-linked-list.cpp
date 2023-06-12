@@ -12,7 +12,8 @@ class Solution
         if (!first and second)
             return second;
         
-        Node<int> * ans = new Node(0);
+        Node<int> * ans;
+        if(first->data)
     }
 };
 int main()
