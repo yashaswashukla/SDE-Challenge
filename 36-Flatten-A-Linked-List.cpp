@@ -5,27 +5,49 @@ Link:https://www.codingninjas.com/codestudio/problems/flatten-a-linked-list_8230
 using namespace std;
 class Solution
 {
-    Node *flattenLinkedList(Node *head)
+    Node *merge(Node *down, Node *right)
     {
-        Node *ptr = head;
-        while (ptr)
+        if (!down)
+            return right;
+        if (!right)
+            return down;
+
+        Node *ans = new Node(0);
+        Node *temp = ans;
+        while (down and right)
         {
-            Node *next = ptr->next;
-            Node *ch = ptr->child;
-            Node *temp = ch;
-            while (temp and temp->child)
+            if (down->data < right->data)
             {
-                temp->next = temp->child;
-                temp->child = nullptr;
-                temp = temp->next;
+                temp->child = down;
+                temp = down;
+                down = down->child;
             }
-            ptr->child = nullptr;
-            temp->next = next;
-            ptr->next = temp;
-            ptr = next;
+            else
+            {
+                temp->child = right;
+                temp = right;
+                right = right->child;
+            }
         }
 
-        return head;
+        if (down)
+            temp->child = down;
+        else
+            temp->child = right;
+
+        return ans;
+    }
+    Node *flattenLinkedList(Node *head)
+    {
+        if (!head)
+            return head;
+        Node *down = head;
+        Node *right = head->next;
+        head->next = nullptr;
+        right = flattenLinkedList(right);
+
+        Node *ans = merge(down, right);
+        return ans;
     }
 };
 int main()
