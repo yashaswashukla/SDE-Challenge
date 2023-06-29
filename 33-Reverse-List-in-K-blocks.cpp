@@ -5,79 +5,63 @@ Link:https://www.codingninjas.com/codestudio/problems/reverse-nodes-in-k-group_8
 using namespace std;
 class Solution
 {
-    Node *getListAfterReverseOperation(Node *head, int n, int b[])
+public:
+    Node *reverseKGroup(Node *head, int idx, int b[], int n)
     {
-        // Write your code here.
-        if (!head or !head->next)
+        if (idx >= n)
             return head;
-
-        Node *ptr = head;
-        Node *prev = ptr, *curr, *next;
-        for (int i = 0; i < n; i++)
-        {
-            int k = b[i];
-            if (k == 1)
-                prev = prev->next;
-            else if (k > 1)
-            {
-                int count = k;
-                curr = prev->next;
-                next = curr->next;
-
-                while (count != 1)
-                {
-                    if (!next)
-                        return ptr->next;
-
-                    curr->next = next->next;
-                    next->next = prev->next;
-                    prev = next;
-                    next = curr->next;
-                    count--;
-                }
-
-                prev = curr;
-                if (!next)
-                    return ptr->next;
-            }
-        }
-        return ptr->next;
-    }
-
-    Node *getListAfterReverseOperation(Node *head, int n, int b[])
-    { // Write your code here.
-        if (head == NULL || head->next == NULL)
+        if (!head or !b[idx])
             return head;
-        Node *t = head;
-        Node *dummy = new Node(-1);
-        dummy->next = head;
-        Node *prev = dummy;
-        Node *curr;
-        Node *nxt;
         int i = 0;
-        while (curr->next != NULL && i < n)
+        Node *prev = nullptr, *curr = head, *nx = nullptr;
+        while (curr)
         {
-            curr = prev->next;
-            nxt = curr->next;
-            int j = b[i] - 1;
-
-            while (j > 0 && curr->next != NULL)
-            {
-                curr->next = nxt->next;
-                nxt->next = prev->next;
-                prev->next = nxt;
-                nxt = curr->next;
-                j--;
-            }
-            if (j >= 0)
-            {
-                prev = curr;
-            }
+            curr = curr->next;
             i++;
         }
-        return dummy->next;
+
+        if (i < b[idx])
+        {
+            curr = head;
+            while (curr)
+            {
+                nx = curr->next;
+                curr->next = prev;
+                prev = curr;
+                curr = nx;
+            }
+            return prev;
+        }
+
+        i = 0;
+        curr = head;
+        while (i < b[idx] and curr)
+        {
+            nx = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = nx;
+            i++;
+        }
+        if (nx)
+            head->next = reverseKGroup(nx, idx + 1, b, n);
+        return prev;
+    }
+    Node *getListAfterReverseOperation(Node *head, int n, int b[])
+    {
+        if (!head or !n)
+            return head;
+        return reverseKGroup(head, 0, b, n);
     }
 };
 int main()
 {
 }
+
+/*
+2 5 7 8 4 -1
+3
+2 3 4
+
+5 2 4 8 7 -1
+*/
